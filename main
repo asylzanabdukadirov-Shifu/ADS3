@@ -1,0 +1,106 @@
+import random
+import time
+
+class Sorter:
+
+    def basic_sort(self, arr):
+        # Bubble Sort
+        n = len(arr)
+        for i in range(n - 1):
+            for j in range(n - i - 1):
+                if arr[j] > arr[j + 1]:
+                    arr[j], arr[j + 1] = arr[j + 1], arr[j]
+
+    def advanced_sort(self, arr):
+        # Merge Sort
+        self.merge_sort(arr)
+
+    def merge_sort(self, arr):
+        if len(arr) > 1:
+            mid = len(arr) // 2
+            left = arr[:mid]
+            right = arr[mid:]
+
+            self.merge_sort(left)
+            self.merge_sort(right)
+
+            i = j = k = 0
+
+            while i < len(left) and j < len(right):
+                if left[i] < right[j]:
+                    arr[k] = left[i]
+                    i += 1
+                else:
+                    arr[k] = right[j]
+                    j += 1
+                k += 1
+
+            while i < len(left):
+                arr[k] = left[i]
+                i += 1
+                k += 1
+
+            while j < len(right):
+                arr[k] = right[j]
+                j += 1
+                k += 1
+
+    def generate_random_array(self, size):
+        return [random.randint(0, 1000) for _ in range(size)]
+
+
+class Searcher:
+
+    def search(self, arr, target):
+        # Linear Search
+        for i in range(len(arr)):
+            if arr[i] == target:
+                return i
+        return -1
+
+
+class Experiment:
+
+    def measure_sort_time(self, arr, sorter, sort_type):
+        arr_copy = arr.copy()
+
+        start = time.perf_counter()
+
+        if sort_type == "basic":
+            sorter.basic_sort(arr_copy)
+        else:
+            sorter.advanced_sort(arr_copy)
+
+        end = time.perf_counter()
+
+        return end - start
+
+    def measure_search_time(self, arr, target, searcher):
+        start = time.perf_counter()
+        searcher.search(arr, target)
+        end = time.perf_counter()
+        return end - start
+
+    def run_all_experiments(self):
+        sorter = Sorter()
+        searcher = Searcher()
+
+        sizes = [10, 100, 1000]
+
+        for size in sizes:
+            print(f"\n Array size: {size} ")
+
+            arr = sorter.generate_random_array(size)
+
+            basic_time = self.measure_sort_time(arr, sorter, "basic")
+            advanced_time = self.measure_sort_time(arr, sorter, "advanced")
+            search_time = self.measure_search_time(arr, arr[0], searcher)
+
+            print(f"Bubble Sort time: {basic_time:.6f}")
+            print(f"Merge Sort time: {advanced_time:.6f}")
+            print(f"Search time: {search_time:.6f}")
+
+
+if __name__ == "__main__":
+    exp = Experiment()
+    exp.run_all_experiments()
